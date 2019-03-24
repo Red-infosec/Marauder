@@ -145,6 +145,7 @@ namespace Faction.Modules.Dotnet.Common
                 // We don't want to cause an breaking exception if it fails to connect
                 Console.WriteLine($"[Marauder HTTP Transport] Connection failed: {e.Message}");
 
+                response.Add("Message","ERROR");
                 return response;
             }
         }
@@ -196,6 +197,7 @@ namespace Faction.Modules.Dotnet.Common
                 // We don't want to cause an breaking exception if it fails to connect
                 Console.WriteLine($"[Marauder HTTP Transport] Connection failed: {e.Message}");
 
+                response.Add("Message","ERROR");
                 return response;
             }
         }
@@ -248,7 +250,7 @@ namespace Faction.Modules.Dotnet.Common
                 string jsonMessage = JsonConvert.SerializeObject(_bodyContent);
 
                 _webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                
+
                 Console.WriteLine($"[Marauder Http Transport] Sending POST. URL: {beaconUrl} Message: {jsonMessage}");
 
                 string content = _webClient.UploadString(beaconUrl, jsonMessage);
@@ -262,7 +264,8 @@ namespace Faction.Modules.Dotnet.Common
             {
                 // We don't want to cause an breaking exception if it fails to connect
                 Console.WriteLine($"[Marauder HTTP Transport] Connection failed: {e.Message}");
-
+                
+                response.Add("Message","ERROR");
                 return response;
             }
         }
