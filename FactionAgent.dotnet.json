@@ -4,20 +4,26 @@
     "The Faction Team"
   ],
   "Guid": "0000-0000-0001-FEED-ACDC",
-  "AgentTypeFormats": [
-    {
-      "Name":"v35-x86-exe",
-      "Description": ".NET 3.5 Executable",
-      "BuildCommand": "bash ./build.sh -f v3.5 -n PAYLOADNAME -p PAYLOADKEY -t TRANSPORT -i BEACONINTERVAL -j JITTER -e \"EXPIRATION\"",
-      "BuildLocation": "./bin/Release/Marauder.exe"
-    },
-    {
-      "Name":"v35-x86-exe-debug",
-      "Description": ".NET 3.5 Executable with Debug",
-      "BuildCommand": "bash ./build.sh -f v3.5 -n PAYLOADNAME -p PAYLOADKEY -t TRANSPORT -i BEACONINTERVAL -j JITTER  -e \"EXPIRATION\" -d True",
-      "BuildLocation": "./bin/Debug/Marauder.exe"
-    }
+  "OperatingSystems": [
+    "Windows"
   ],
+  "Architecture": [
+    "x86",
+    "x64"
+  ],
+  "Versions": [
+    "NET35",
+    "NET45"
+  ],
+  "Formats": [
+    "Executable"
+  ],
+  "Configutations": [
+    "Default",
+    "Obfuscated"
+  ],
+  "BuildCommand": "python ./build.py",
+  "BuildLocation": "./output/Marauder.exe",
   "AgentTransportTypes": [
     {
       "Name":"DIRECT",
