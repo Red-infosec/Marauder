@@ -7,7 +7,7 @@
   "OperatingSystems": [
     "Windows"
   ],
-  "Architecture": [
+  "Architectures": [
     "x86",
     "x64"
   ],
@@ -18,7 +18,7 @@
   "Formats": [
     "Executable"
   ],
-  "Configutations": [
+  "Configurations": [
     "Default",
     "Obfuscated"
   ],
