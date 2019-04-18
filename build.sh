@@ -43,6 +43,7 @@ echo -e "{\"PayloadName\":\""$payload_name"\", \"Password\":\""$password"\", \"T
 
 if [ "$debug" = "True" ]; then
   configuration=Debug
+  output_location=""
 else
   configuration=Release
 fi

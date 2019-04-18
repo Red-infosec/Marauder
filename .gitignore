@@ -1,5 +1,5 @@
 Transports/*.dll
-
+settings.json
 # Created by https://www.gitignore.io/api/csharp,monodevelop,visualstudio,visualstudiocode
 
 ### Csharp ###
