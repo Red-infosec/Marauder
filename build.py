@@ -32,10 +32,20 @@ else:
     configuration = "Release"
     output_path = "./bin/Release/Marauder.exe"
 
-build_cmd = "msbuild Marauder.csproj /p:TrimUnusedDependencies=true /t:Build /p:Configuration={} /p:TargetFramework={}".format(configuration, build_config["Version"])
+restore_cmd = "nuget restore"
+print("[Marauder Build] Running restore command: {}".format(restore_cmd))
 
-print("[Marauder Build] Running build command: {}".format(build_cmd))
-call(build_cmd, shell=True)
+restore_exit = call(restore_cmd, shell=True)
+if restore_exit == 0:
+    build_cmd = "msbuild Marauder.csproj /p:TrimUnusedDependencies=true /t:Build /p:Configuration={} /p:TargetFramework={}".format(configuration, build_config["Version"])
+    print("[Marauder Build] Running build command: {}".format(build_cmd))
+    build_exit = call(build_cmd, shell=True)
+else:
+    print("[Marauder Build] Failed to restore packages.")
+    sys.exit(1)
 
-shutil.move(output_path, "./output/Marauder.exe")
-
+if build_exit == 0:
+    shutil.move(output_path, "./output/Marauder.exe")
+else:
+    print("[Marauder Build] Build Failed.")
+    sys.exit(1)
