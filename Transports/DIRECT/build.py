@@ -23,7 +23,7 @@ else:
 transport_config = json.loads(build_config["TransportConfiguration"])
 transport_config["Debug"] = build_config["Debug"]
 
-with open('./settings.json', 'w') as settings_file:
+with open('./Tranports/DIRECT/DIRECT.settings.json', 'w') as settings_file:
    settings_file.write(json.dumps(transport_config))
 
 build_cmd = "msbuild ./Transports/DIRECT/DIRECT.csproj /t:Build /p:Configuration={} /p:TargetFramework={}".format(configuration, build_config["Version"])
