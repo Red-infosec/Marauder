@@ -23,6 +23,10 @@ namespace Marauder.Services
       Transports.Add(transport);
     }
 
+    public void AddTransport(List<AgentTransport> transports)
+    {
+      Transports.AddRange(transports);
+    }
     public TaskResult SetPrimaryTransport(string transportName)
     {
       TaskResult resp = new TaskResult();

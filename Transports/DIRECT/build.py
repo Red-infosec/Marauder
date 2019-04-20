@@ -20,8 +20,11 @@ else:
     configuration = "Release"
     output_path = "./Transports/DIRECT/bin/Release/DIRECT.dll"
 
+transport_config = json.load(build["TransportConfiguration"])
+transport_config["Debug"] = build_config["Debug"]
+
 with open('./settings.json', 'w') as settings_file:
-   settings_file.write(build_config["TransportConfiguration"])
+   settings_file.write(transport_config)
 
 build_cmd = "msbuild ./Transports/DIRECT/DIRECT.csproj /t:Build /p:Configuration={} /p:TargetFramework={}".format(configuration, build_config["Version"])
 call(build_cmd, shell=True)

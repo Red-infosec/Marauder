@@ -1,5 +1,6 @@
 ﻿{
 	"ApiURL": "",
 	"APIKey": "",
-	"APISecret": ""
+	"APISecret": "",
+	"Debug": "False"
 }
