@@ -27,7 +27,7 @@ transport_config = json.loads(build_config["TransportConfiguration"])
 transport_config["Debug"] = build_config["Debug"]
 print("[DIRECT Transport Build] Writing config to DIRECT.settings.json..\n\n {}".format(transport_config))
 
-with open('./Transports/DIRECT/DIRECT.settings.json', 'w') as settings_file:
+with open('./Transports/DIRECT/settings.json', 'w') as settings_file:
    settings_file.write(json.dumps(transport_config))
 
 print("[DIRECT Transport Build] Building Transport..")

