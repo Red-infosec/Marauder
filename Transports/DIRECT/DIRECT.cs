@@ -49,7 +49,7 @@ namespace Faction.Modules.Dotnet
     {
       // Disable Cert Check
       ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-      string stagingUrl = $"{Url}/api/v1/staging/{StageName}/{StagingId}/";
+      string stagingUrl = $"{this.Url}/api/v1/staging/{StageName}/{StagingId}/";
       WebClient wc = new WebClient();
       wc.Headers[HttpRequestHeader.ContentType] = "application/json";
       string authHeader = Convert.ToBase64String(Encoding.UTF8.GetBytes(String.Format("{0}:{1}", KeyName, Secret)));
@@ -86,7 +86,7 @@ namespace Faction.Modules.Dotnet
     {
       // Disable cert check
       ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-      string beaconUrl = $"{Url}/api/v1/agent/{AgentName}/checkin/";
+      string beaconUrl = $"{this.Url}/api/v1/agent/{AgentName}/checkin/";
 
       WebClient wc = new WebClient();
       wc.Headers[HttpRequestHeader.ContentType] = "application/json";

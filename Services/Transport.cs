@@ -98,6 +98,8 @@ namespace Marauder.Services
         }
         else {
           message = State.CryptoService.CreateStagingMessage();
+          string name = State.PayloadName;
+          string id = State.StagingId;
           response = PrimaryTransport.Stage(State.PayloadName, State.StagingId, message);
         }
 #if DEBUG        
