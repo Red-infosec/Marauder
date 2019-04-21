@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Faction.Modules.Dotnet.Common, Version=1.0.7007.24693, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Faction.Modules.Dotnet.Common, Version=1.0.7049.34601, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Faction.Modules.Dotnet.Common.2019.4.20\lib\net35\Faction.Modules.Dotnet.Common.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
