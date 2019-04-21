@@ -9,15 +9,15 @@ using Faction.Modules.Dotnet.Common;
 
 namespace Faction.Modules.Dotnet
 {
-  public class Transport : AgentTransport
+  public class DIRECT : AgentTransport
   {
-    new public string Name = "DIRECT";
+    public override string Name { get { return "DIRECT"; } }
     public string Url;
     public string KeyName;
     public string Secret;
     public bool Debug;
 
-    public Transport(){
+    public DIRECT(){
 #if DEBUG
       Console.WriteLine($"[Marauder DIRECT Transport] Creating DIRECT Transport");
       Console.WriteLine($"[Marauder DIRECT Transport] Loading Settings..");
@@ -147,9 +147,7 @@ namespace Faction.Modules.Dotnet
 #endif
 
       List<AgentTransport> transports = new List<AgentTransport>();
-      Transport direct = new Transport();
-
-      transports.Add(direct);
+      transports.Add(new DIRECT());
       return transports;
     }
   }
