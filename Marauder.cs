@@ -63,9 +63,9 @@ namespace Marauder
 
       State.TransportService = new TransportService();
       State.TransportService.AddTransport((List<AgentTransport>)transports);
-      State.TransportService.SetPrimaryTransport(settings["InitialTransportName"]);
+      State.TransportService.SetPrimaryTransport(settings["InitialTransportType"]);
 #if DEBUG
-      Logging.Write("Main", $"Loaded Transport Type: {settings["InitialTransportName"]}");
+      Logging.Write("Main", $"Loaded Transport Type: {settings["InitialTransportType"]}");
 #endif
 
 #if DEBUG      

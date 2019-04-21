@@ -14,7 +14,7 @@ except Exception as e:
 marauder_settings = dict({
     "PayloadName": build_config["PayloadName"],
     "Password": build_config["PayloadKey"],
-    "InitialTransportName": build_config["InitialTransportName"],
+    "InitialTransportType": build_config["InitialTransportType"],
     "TransportModule": build_config["TransportModule"],
     "BeaconInterval": build_config["BeaconInterval"],
     "Jitter": build_config["Jitter"],
