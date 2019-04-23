@@ -1,4 +1,6 @@
 Transports/*.dll
+Transports/DIRECT/DIRECT.settings.json
+settings.json
 
 # Created by https://www.gitignore.io/api/csharp,monodevelop,visualstudio,visualstudiocode
 

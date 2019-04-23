@@ -17,7 +17,7 @@ namespace Marauder.Services
     public static double Jitter;
     public static int MaxAttempts;
     public static string LastTaskName;
-    public static string InitialTransport;
+    public static string TransportModule;
     public static DateTime? ExpirationDate;
     public static List<TaskResult> ResultQueue = new List<TaskResult>();
     public static List<RunningTask> RunningTasks = new List<RunningTask>();

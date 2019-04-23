@@ -23,6 +23,10 @@ namespace Marauder.Services
       Transports.Add(transport);
     }
 
+    public void AddTransport(List<AgentTransport> transports)
+    {
+      Transports.AddRange(transports);
+    }
     public TaskResult SetPrimaryTransport(string transportName)
     {
       TaskResult resp = new TaskResult();
@@ -94,6 +98,8 @@ namespace Marauder.Services
         }
         else {
           message = State.CryptoService.CreateStagingMessage();
+          string name = State.PayloadName;
+          string id = State.StagingId;
           response = PrimaryTransport.Stage(State.PayloadName, State.StagingId, message);
         }
 #if DEBUG        

