@@ -124,7 +124,8 @@ namespace Faction.Modules.Dotnet
 #if DEBUG
           Console.WriteLine($"[Marauder DIRECT Transport] GETTING Checkin..");
 #endif
-          string response = wc.DownloadString(beaconUrl);
+          string getUrl = $"{beaconUrl}?TransportId=1";
+          string response = wc.DownloadString(getUrl);
           responseDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
         }
         catch (Exception e)
