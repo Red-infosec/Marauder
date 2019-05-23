@@ -100,6 +100,7 @@ namespace Marauder.Services
           message = State.CryptoService.CreateStagingMessage();
           string name = State.PayloadName;
           string id = State.StagingId;
+          AgentTransport example = PrimaryTransport;
           response = PrimaryTransport.Stage(State.PayloadName, State.StagingId, message);
         }
 #if DEBUG        
