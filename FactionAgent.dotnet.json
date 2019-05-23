@@ -35,7 +35,7 @@
       "Name":"HTTP",
       "TransportTypeGuid": "2daece20-0d27-4068-b265-ceff27d3f3b2",
       "BuildCommand": "python3 ./Transports/HTTP/build.py",
-      "BuildLocation": "./output/Transports/HTTPTransport.dll"
+      "BuildLocation": "./output/Transports/HttpTransport.dll"
     }
   ],
   "Commands": [
