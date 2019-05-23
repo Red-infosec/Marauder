@@ -8,7 +8,7 @@ try:
     with open(sys.argv[1]) as build_file:  
         build_config = json.load(build_file)
 except Exception as e:
-    print("[DIRECT Transport Build] Could not load build config file. Error {}".format(e.Message))
+    print("[DIRECT Transport Build] Could not load build config file. Error {}".format(str(e)))
     sys.exit(1)
 
 print("[DIRECT Transport Build] Restoring packages..")

@@ -19,3 +19,5 @@ sed -i "s|CONFIG|$config|g" ./Transports/HttpTransport/HttpTransport-build.cs
 msbuild /t:Restore ./Transports/HttpTransport/httptransport.csproj /p:RestorePackagesPath=./Transports/HttpTransport/packages
 msbuild ./Transports/HttpTransport/httptransport.csproj /p:Configuration=Debug;TargetFrameworkVersion=v3.5
 mv ./Transports/HttpTransport/bin/Debug/net35/httptransport.dll ./Transports/HttpTransport/HttpTransport.dll
+
+msbuild /t:Restore ./httptransport.csproj /p:RestorePackagesPath=./packages

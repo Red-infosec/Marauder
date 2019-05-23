@@ -32,10 +32,10 @@
       "BuildLocation": "./output/Transports/DIRECT.dll"
     },
     {
-      "Name":"HttpTransport",
+      "Name":"HTTP",
       "TransportTypeGuid": "2daece20-0d27-4068-b265-ceff27d3f3b2",
-      "BuildCommand": "bash ./Transports/HttpTransport/build.sh -c CONFIG",
-      "BuildLocation": "./output/Transports/HttpTransport.dll"
+      "BuildCommand": "python3 ./Transports/HTTP/build.py",
+      "BuildLocation": "./output/Transports/HTTPTransport.dll"
     }
   ],
   "Commands": [
