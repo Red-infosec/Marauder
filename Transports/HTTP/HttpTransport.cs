@@ -61,11 +61,7 @@ namespace Faction.Modules.Dotnet
         Logging.Log($"Ignoring SSL per configuration..");
 #endif
         //Change SSL checks so that all checks pass
-        ServicePointManager.ServerCertificateValidationCallback =
-           new RemoteCertificateValidationCallback(
-                delegate
-                { return true; }
-            );
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
       }
 
       if (profile == "HttpGet")
@@ -169,7 +165,7 @@ namespace Faction.Modules.Dotnet
         response = GetPayloadContent(content, _webClient.ResponseHeaders, "HttpPost");
 
         return response;
-      }
+     }
       catch (Exception e)
       {
         // We don't want to cause an breaking exception if it fails to connect
