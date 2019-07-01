@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Faction.Modules.Dotnet
 {
-  #if DEBUG
+#if DEBUG
     public static class Logging
     {
       public static void Log(string message) {
@@ -29,15 +29,18 @@ namespace Faction.Modules.Dotnet
 
     public override string Name { get { return "HTTP"; } }
     public Profile _profile;
-    public HTTPTransport() {
-      try {
+    public HTTPTransport()
+    {
+      try
+      {
 #if DEBUG
         Logging.Log($"Initializing..");
 #endif
         Stream settingsStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("HttpTransport.settings.json");
         _profile = JsonConvert.DeserializeObject<Profile>(new StreamReader(settingsStream).ReadToEnd());
       }
-      catch (Exception e) {
+      catch (Exception e)
+      {
 #if DEBUG
         Logging.Log($"Problem initializing transport: {e.Message}");
 #endif
@@ -51,7 +54,7 @@ namespace Faction.Modules.Dotnet
 #endif
 
       //force Tls 1.1 or Tls 1.2 because Tls 1.0 not works!
-      ServicePointManager.SecurityProtocol = (SecurityProtocolType)( 0x300 | 0xc00 );
+      //ServicePointManager.SecurityProtocol = (SecurityProtocolType)( 0x300 | 0xc00 );
 
       if (ignoreSSL)
       {
@@ -122,6 +125,7 @@ namespace Faction.Modules.Dotnet
         WebClient _webClient = CreateWebClient(_ignoreSSL, "HttpPost");
 
         // Add the Stage Message into the request per the configuration
+
         var _messageLocation = _profile.HttpPost["ClientPayload"]["Message"];
         if (_messageLocation.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[0] == "Header")
           _webClient.Headers.Add(_messageLocation.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[1], StageMessage);
@@ -169,7 +173,7 @@ namespace Faction.Modules.Dotnet
         response = GetPayloadContent(content, _webClient.ResponseHeaders, "HttpPost");
 
         return response;
-     }
+      }
       catch (Exception e)
       {
         // We don't want to cause an breaking exception if it fails to connect
