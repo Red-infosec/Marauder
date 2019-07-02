@@ -251,18 +251,18 @@ namespace Faction.Modules.Dotnet
         return "ERROR";
       }
     }
-    public class Initialize
+  }
+  public class Initialize
+  {
+    public static List<AgentTransport> GetTransports()
     {
-      public static List<AgentTransport> GetTransports()
-      {
 #if DEBUG
-        Logging.Log($"Initializing..");
+      Logging.Log($"Initializing..");
 #endif
 
-        List<AgentTransport> transports = new List<AgentTransport>();
-        transports.Add(new HTTPTransport());
-        return transports;
-      }
+      List<AgentTransport> transports = new List<AgentTransport>();
+      transports.Add(new HTTPTransport());
+      return transports;
     }
   }
 }
