@@ -93,8 +93,12 @@ namespace Faction.Modules.Dotnet
 
     private string GetFactionMessage(string Content)
     {
-      string factionMessage = Content.Remove(0, Profile.ServerMessageConfig.Prepend.Count());
-      factionMessage = factionMessage.Remove(factionMessage.Length - Profile.ServerMessageConfig.Append.Count());
+      string factionMessage = "";
+      if (Content != Profile.ServerMessageConfig.Default)
+      {
+        factionMessage = Content.Remove(0, Profile.ServerMessageConfig.Prepend.Count());
+        factionMessage = factionMessage.Remove(factionMessage.Length - Profile.ServerMessageConfig.Append.Count());
+      }
       return factionMessage;
     }
 
