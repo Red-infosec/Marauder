@@ -146,6 +146,9 @@ namespace Faction.Modules.Dotnet
       _webClient.Proxy = WebRequest.DefaultWebProxy;
       _webClient.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 
+      // trust self-signed certs
+      ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
       foreach (KeyValuePair<string, string> header in Profile.Headers)
       {
         _webClient.Headers.Add(header.Key, header.Value);
