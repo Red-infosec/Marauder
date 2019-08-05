@@ -11,6 +11,13 @@ except Exception as e:
     print("[Marauder Build] Could not load build config file. Error {}".format(e.Message))
     sys.exit(1)
 
+if build_config["Version"] == "NET35":
+    build_ver = "v3.5"
+    call("cp Marauder35.csproj Marauder.csproj", shell=True)
+else:
+    build_ver = "v4.5.2"
+    call("cp Marauder45.csproj Marauder.csproj", shell=True)
+
 marauder_settings = dict({
     "PayloadName": build_config["PayloadName"],
     "Password": build_config["PayloadKey"],
@@ -35,14 +42,15 @@ else:
 
 restore_cmd = "nuget restore"
 print("[Marauder Build] Running restore command: {}".format(restore_cmd))
-
 restore_exit = call(restore_cmd, shell=True)
 if restore_exit == 0:
-    build_cmd = "msbuild Marauder.csproj /p:TrimUnusedDependencies=true /t:Build /p:Configuration={} /p:TargetFramework={}".format(configuration, build_config["Version"])
+    build_cmd = "msbuild Marauder.csproj /p:TrimUnusedDependencies=true /t:Build /p:Configuration={} /p:TargetFrameworkVersion={}".format(configuration, build_ver)
     print("[Marauder Build] Running build command: {}".format(build_cmd))
     build_exit = call(build_cmd, shell=True)
+    call("rm Marauder.csproj", shell=True)
 else:
     print("[Marauder Build] Failed to restore packages.")
+    call("rm Marauder.csproj", shell=True)
     sys.exit(1)
 
 if build_exit == 0:
@@ -50,3 +58,4 @@ if build_exit == 0:
 else:
     print("[Marauder Build] Build Failed.")
     sys.exit(1)
+
