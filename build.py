@@ -41,8 +41,22 @@ else:
 restore_cmd = "nuget restore"
 print("[Marauder Build] Running restore command: {}".format(restore_cmd))
 restore_exit = call(restore_cmd, shell=True)
+
 if restore_exit == 0:
-    build_cmd = "msbuild Marauder.csproj /p:TrimUnusedDependencies=true /t:Build /p:Configuration={} /p:TargetFrameworkVersion={}".format(configuration, build_ver)
+    # Setup version
+    if build_config["Version"] == "NET35":
+        version = "v3.5"
+    elif build_config["Version"] == "NET45":
+        version = "v4.5.2"
+    else:
+        print("[Marauder Build] Could not find a match for version: {}".format(build_config["Version"]))
+        sys.exit(1)
+
+    # Setup Debug vs Release and build
+    if configuration == "Debug":
+        build_cmd = "msbuild Marauder.csproj /t:Build /p:Configuration=Debug /p:OutputType=exe /p:TargetFrameworkVersion={}".format(version)
+    else:
+        build_cmd = "msbuild Marauder.csproj /t:Build /p:Configuration=Release /p:Optimize=true /p:OutputType=Winexe /p:TargetFrameworkVersion={}".format(version)
     print("[Marauder Build] Running build command: {}".format(build_cmd))
     build_exit = call(build_cmd, shell=True)
 else:
