@@ -11,6 +11,11 @@ except Exception as e:
     print("[Marauder Build] Could not load build config file. Error {}".format(e.Message))
     sys.exit(1)
 
+if build_config["Version"] == "NET35":
+    build_ver = "v3.5"
+elif build_config["Version"] == "NET45":
+    build_ver = "v4.5.2"
+
 marauder_settings = dict({
     "PayloadName": build_config["PayloadName"],
     "Password": build_config["PayloadKey"],
@@ -35,7 +40,6 @@ else:
 
 restore_cmd = "nuget restore"
 print("[Marauder Build] Running restore command: {}".format(restore_cmd))
-
 restore_exit = call(restore_cmd, shell=True)
 
 if restore_exit == 0:
@@ -64,3 +68,4 @@ if build_exit == 0:
 else:
     print("[Marauder Build] Build Failed.")
     sys.exit(1)
+
