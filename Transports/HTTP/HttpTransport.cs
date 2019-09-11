@@ -234,8 +234,8 @@ namespace Faction.Modules.Dotnet
         {
 #if DEBUG
           Logging.Log($"GETting URL: {beaconUrl}");
-          content = _webClient.DownloadString(beaconUrl);
 #endif
+          content = _webClient.DownloadString(beaconUrl);
         }
         else
         {
