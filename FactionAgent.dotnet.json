@@ -38,6 +38,13 @@
   ],
   "Commands": [
     {
+      "Name": "info",
+      "Description": "Displays the agents current settings",
+      "Help": "Collects settings from the running agent and displays them",
+      "OpsecSafe": "True",
+      "Parameters": []
+    },
+    {
       "Name": "tasks",
       "Description": "List tasks running in Marauder",
       "Help": "Marauder runs commands within .NET Tasks, this command returns a list of any Tasks being run. You can kill a task using the /kill:<task_name> parameter.",
