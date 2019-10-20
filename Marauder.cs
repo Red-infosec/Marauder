@@ -77,6 +77,7 @@ namespace Marauder
 #if DEBUG      
       Logging.Write("Main", "Loading Commands..");
 #endif
+      State.CommandService.AvailableCommands.Add(new InfoCommand());
       State.CommandService.AvailableCommands.Add(new TasksCommand());
       State.CommandService.AvailableCommands.Add(new ExitCommand());
 
