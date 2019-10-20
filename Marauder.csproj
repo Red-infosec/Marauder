@@ -63,6 +63,7 @@
     <Content Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Info.cs" />
     <Compile Include="Commands\Tasks.cs" />
     <Compile Include="Services\Command.cs" />
     <Compile Include="Services\Crypto.cs" />
